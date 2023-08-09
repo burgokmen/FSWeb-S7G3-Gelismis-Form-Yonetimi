@@ -1,3 +1,4 @@
+import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -10,8 +11,6 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <div>
           <h1>Form Example</h1>
-        </div>
-        <div>
           <FormMaker />
         </div>
       </header>

@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react";
-import {
-  Button,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  FormFeedback,
-} from "reactstrap";
+import { Form, FormGroup, Label, Input, FormFeedback } from "reactstrap";
 import * as Yup from "yup";
 import axios from "axios";
 /* import Button from "react-bootstrap/Button"; */
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const loginDataInitial = {
   email: "",
@@ -25,7 +19,7 @@ const roller = [
   { label: "Reader", value: "Reader" },
 ];
 
-const FormMaker = () => {
+const FormMaker = (props) => {
   const [loginData, setLoginData] = useState(loginDataInitial);
   const [formErrors, setFormErrors] = useState({
     email: "",
@@ -35,12 +29,14 @@ const FormMaker = () => {
     option: "",
     role: "",
   });
+
   const [isFormValid, setFormValid] = useState(false);
 
   const formSchema = Yup.object().shape({
     email: Yup.string()
       .email("Not an email")
-      .required("Please enter your e-mail"),
+      .required("Please enter your e-mail")
+      .notOneOf(["waffle@syrup.com", "u already inside bro"]),
     /* .test("is-jimmy", "Ama bu Jimmy değil!", (value, context) => {
         // custom validation
         // return true | false
@@ -61,10 +57,10 @@ const FormMaker = () => {
     e.preventDefault();
     console.log("Form Submit Edildi! ", loginData);
 
-    axios
-      .post("https://reqres.in/api/users", loginData)
-      .then(({ data }) => console.log(data));
-      .then()
+    axios.post("https://reqres.in/api/users", loginData).then(({ data }) => {
+      console.log(data);
+      props.addUser(data);
+    });
   };
 
   const handleInputChange = (e) => {
@@ -98,9 +94,9 @@ const FormMaker = () => {
     formSchema.isValid(loginData).then((valid) => setFormValid(valid));
   }, [loginData]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     console.error("[Form Validation Error State Updated] ", formErrors);
-  }, [formErrors]);
+  }, [formErrors]); */
 
   useEffect(() => {
     //component did mount
@@ -179,6 +175,7 @@ const FormMaker = () => {
               value={1}
               onChange={handleInputChange}
               invalid={!!formErrors.option}
+              data-cy="radio-button"
             />{" "}
             Option one is this and that—be sure to include why it's great
           </Label>
@@ -209,7 +206,7 @@ const FormMaker = () => {
           </Label>
         </FormGroup>
         {formErrors.option && (
-          <div class="invalid-feedback" style={{ display: "block" }}>
+          <div className="invalid-feedback" style={{ display: "block" }}>
             {formErrors.option}
           </div>
         )}
@@ -222,6 +219,7 @@ const FormMaker = () => {
           id="role-select"
           onChange={handleInputChange}
           invalid={!!formErrors.role}
+          data-cy="select-button"
         >
           <option value="">Select your role</option>
           {roller.map((rolItem, i) => {
@@ -243,7 +241,7 @@ const FormMaker = () => {
       >
         Reset Form
       </button>
-      <button type="submit" disabled={!isFormValid}>
+      <button type="submit" disabled={!isFormValid} data-cy="login-botton">
         Login
       </button>
     </Form>
